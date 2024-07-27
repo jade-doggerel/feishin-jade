@@ -433,9 +433,7 @@ export const AlbumArtistDetailContent = ({ background }: AlbumArtistDetailConten
                             <Button
                                 compact
                                 component="a"
-                                href={`https://www.last.fm/music/${encodeURIComponent(
-                                    detailQuery?.data?.name || '',
-                                )}`}
+                                href="https://www.last.fm/music/"
                                 radius="md"
                                 rel="noopener noreferrer"
                                 size="md"
@@ -447,23 +445,28 @@ export const AlbumArtistDetailContent = ({ background }: AlbumArtistDetailConten
                             >
                                 <FaLastfmSquare size={25} />
                             </Button>
-                            {mbzId ? (
-                                <Button
-                                    compact
-                                    component="a"
-                                    href={`https://musicbrainz.org/artist/${mbzId}`}
-                                    radius="md"
-                                    rel="noopener noreferrer"
-                                    size="md"
-                                    target="_blank"
-                                    tooltip={{
-                                        label: t('action.openIn.musicbrainz'),
-                                    }}
-                                    variant="subtle"
-                                >
-                                    <SiMusicbrainz size={25} />
-                                </Button>
-                            ) : null}
+                            <Button
+                                compact
+                                component="a"
+                                href={
+                                    mbzId
+                                        ? `https://musicbrainz.org/artist/${mbzId}`
+                                        : `https://musicbrainz.org/search?query=${encodeURIComponent(
+                                              detailQuery?.data?.name || '',
+                                          )}&type=artist`
+                                }
+                                // href={`https://musicbrainz.org/artist/${mbzId}`}
+                                radius="md"
+                                rel="noopener noreferrer"
+                                size="md"
+                                target="_blank"
+                                tooltip={{
+                                    label: t('action.openIn.musicbrainz'),
+                                }}
+                                variant="subtle"
+                            >
+                                <SiMusicbrainz size={25} />
+                            </Button>
                         </Group>
                     </Box>
                 ) : null}
