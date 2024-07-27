@@ -10,6 +10,8 @@ import {
     RiVolumeMuteFill,
     RiHeartLine,
     RiHeartFill,
+    RiCloudOffFill,
+    RiCloudFill,
 } from 'react-icons/ri';
 import {
     useAppStoreActions,
@@ -17,13 +19,15 @@ import {
     useCurrentSong,
     useHotkeySettings,
     useMuted,
+    usePlaybackSettings,
     usePreviousSong,
+    useSettingsStoreActions,
     useSidebarStore,
     useSpeed,
     useVolume,
 } from '/@/renderer/store';
-import { useRightControls } from '../hooks/use-right-controls';
 import { PlayerButton } from './player-button';
+import { useRightControls } from '../hooks/use-right-controls';
 import { LibraryItem, QueueSong, ServerType, Song } from '/@/renderer/api/types';
 import { useCreateFavorite, useDeleteFavorite, useSetRating } from '/@/renderer/features/shared';
 import { DropdownMenu, Rating } from '/@/renderer/components';
@@ -55,6 +59,7 @@ export const RightControls = () => {
 
     const speed = useSpeed();
 
+    const settings = usePlaybackSettings();
     const updateRatingMutation = useSetRating({});
     const addToFavoritesMutation = useCreateFavorite({});
     const removeFromFavoritesMutation = useDeleteFavorite({});
@@ -104,6 +109,8 @@ export const RightControls = () => {
             handleAddToFavorites(song);
         }
     };
+
+    const { setSettings } = useSettingsStoreActions();
 
     const handleToggleQueue = () => {
         setSideBar({ rightExpanded: !isQueueExpanded });
@@ -296,6 +303,41 @@ export const RightControls = () => {
                         onClick={handleToggleQueue}
                     />
                 ) : null}
+                <PlayerButton
+                    icon={
+                        settings.scrobble.enabled ? (
+                            <RiCloudFill size="1.1rem" />
+                        ) : (
+                            <RiCloudOffFill
+                                color="var(--primary-color)"
+                                size="1.1rem"
+                            />
+                        )
+                    }
+                    sx={{
+                        svg: {
+                            fill: settings.scrobble.enabled
+                                ? undefined
+                                : 'var(--primary-color) !important',
+                        },
+                    }}
+                    tooltip={{
+                        label: t('setting.scrobble', { postProcess: 'sentenceCase' }),
+                        openDelay: 500,
+                    }}
+                    variant="secondary"
+                    onClick={() => {
+                        setSettings({
+                            playback: {
+                                ...settings,
+                                scrobble: {
+                                    ...settings.scrobble,
+                                    enabled: !settings.scrobble.enabled,
+                                },
+                            },
+                        });
+                    }}
+                />
                 <Group
                     noWrap
                     spacing="xs"
